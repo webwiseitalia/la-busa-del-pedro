@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ArrowUp } from 'lucide-react'
 import logo from '../assets/logo-labusa-del-pedro.webp'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -132,7 +133,7 @@ export default function Footer() {
               className="self-start lg:self-end mt-8 lg:mt-0 font-grotesk text-[10px] tracking-[0.3em] uppercase flex items-center gap-3 transition-colors duration-500"
               style={{ color: 'rgba(255,255,255,0.15)' }}
             >
-              <span>↑</span>
+              <ArrowUp size={12} />
               Torna su
             </button>
           </div>

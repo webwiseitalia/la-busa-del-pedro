@@ -2,12 +2,13 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import SplitType from 'split-type'
+import { Headphones, Beer, Target, Sparkles } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const events = [
   {
-    icon: '🎧',
+    icon: <Headphones size={28} strokeWidth={1.5} />,
     title: 'DJ Set',
     sub: 'Ogni weekend',
     description: 'Musica live e selezioni dei migliori DJ. Ogni weekend una serata diversa, ogni serata un ricordo.',
@@ -15,9 +16,10 @@ const events = [
     size: 'lg:col-span-7',
     gradient: 'from-purple-500/[0.08] to-transparent',
     borderColor: 'rgba(168,85,247,0.12)',
+    iconColor: 'rgba(168,85,247,0.6)',
   },
   {
-    icon: '🍻',
+    icon: <Beer size={28} strokeWidth={1.5} />,
     title: 'Happy Hour',
     sub: 'Mer — Dom',
     description: 'Aperitivo con buffet e drink speciali. Il momento perfetto per iniziare la serata.',
@@ -25,9 +27,10 @@ const events = [
     size: 'lg:col-span-5',
     gradient: 'from-amber-500/[0.08] to-transparent',
     borderColor: 'rgba(245,158,11,0.12)',
+    iconColor: 'rgba(245,158,11,0.6)',
   },
   {
-    icon: '🏓',
+    icon: <Target size={28} strokeWidth={1.5} />,
     title: 'Beer Pong',
     sub: 'con Distrettoundici',
     description: 'Tornei e sfide epiche. Metti alla prova la tua mira con i campioni di Distrettoundici!',
@@ -35,9 +38,10 @@ const events = [
     size: 'lg:col-span-5',
     gradient: 'from-emerald-500/[0.08] to-transparent',
     borderColor: 'rgba(16,185,129,0.12)',
+    iconColor: 'rgba(16,185,129,0.6)',
   },
   {
-    icon: '🎉',
+    icon: <Sparkles size={28} strokeWidth={1.5} />,
     title: 'Serate Speciali',
     sub: 'Stay tuned',
     description: 'Eventi a tema, feste, inaugurazioni e sorprese. Seguici per non perderti nulla!',
@@ -45,6 +49,7 @@ const events = [
     size: 'lg:col-span-7',
     gradient: 'from-rose-500/[0.08] to-transparent',
     borderColor: 'rgba(244,63,94,0.12)',
+    iconColor: 'rgba(244,63,94,0.6)',
   },
 ]
 
@@ -153,7 +158,7 @@ export default function Eventi() {
 
               <div className="relative">
                 <div className="flex items-start justify-between mb-6">
-                  <span className="text-3xl lg:text-4xl">{event.icon}</span>
+                  <span style={{ color: event.iconColor }}>{event.icon}</span>
                   <span className="font-grotesk text-[9px] tracking-[0.3em] uppercase" style={{ color: 'rgba(255,255,255,0.2)' }}>
                     {event.sub}
                   </span>

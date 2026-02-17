@@ -3,6 +3,7 @@ import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import SplitType from 'split-type'
 import { FaInstagram, FaFacebookF } from 'react-icons/fa'
+import { ParkingCircle, CreditCard } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -206,11 +207,11 @@ export default function Contatti() {
             {/* Practical info below map */}
             <div className="flex gap-8 mt-6">
               <div className="flex items-center gap-2">
-                <span style={{ color: '#c9a84c', fontSize: '12px' }}>P</span>
+                <ParkingCircle size={13} style={{ color: '#c9a84c' }} />
                 <span className="font-grotesk text-[10px] tracking-wider" style={{ color: 'rgba(255,255,255,0.2)' }}>Parcheggi vicini</span>
               </div>
               <div className="flex items-center gap-2">
-                <span style={{ color: '#c9a84c', fontSize: '12px' }}>💳</span>
+                <CreditCard size={13} style={{ color: '#c9a84c' }} />
                 <span className="font-grotesk text-[10px] tracking-wider" style={{ color: 'rgba(255,255,255,0.2)' }}>Carte accettate</span>
               </div>
             </div>

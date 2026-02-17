@@ -2,17 +2,18 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import SplitType from 'split-type'
+import { Wine, Headphones, TreePine, Sparkles, Target, GlassWater, Flame } from 'lucide-react'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const items = [
-  { emoji: '🍸', label: 'Cocktail d\'autore', w: 'col-span-2 lg:col-span-3', h: 'row-span-2', bg: 'rgba(201,168,76,0.06)' },
-  { emoji: '🎧', label: 'DJ Set', w: 'col-span-1 lg:col-span-2', h: 'row-span-1', bg: 'rgba(168,85,247,0.06)' },
-  { emoji: '🌿', label: 'Piazzetta', w: 'col-span-1 lg:col-span-2', h: 'row-span-1', bg: 'rgba(16,185,129,0.06)' },
-  { emoji: '✨', label: 'Atmosfera', w: 'col-span-2 lg:col-span-3', h: 'row-span-1', bg: 'rgba(244,63,94,0.06)' },
-  { emoji: '🏓', label: 'Beer Pong', w: 'col-span-1 lg:col-span-2', h: 'row-span-1', bg: 'rgba(59,130,246,0.06)' },
-  { emoji: '🥂', label: 'Aperitivo', w: 'col-span-1 lg:col-span-2', h: 'row-span-2', bg: 'rgba(245,158,11,0.06)' },
-  { emoji: '🔥', label: 'Serate live', w: 'col-span-2 lg:col-span-3', h: 'row-span-1', bg: 'rgba(239,68,68,0.06)' },
+  { icon: <Wine size={32} strokeWidth={1.2} />, label: 'Cocktail d\'autore', w: 'col-span-2 lg:col-span-3', h: 'row-span-2', bg: 'rgba(201,168,76,0.06)', iconColor: 'rgba(201,168,76,0.5)' },
+  { icon: <Headphones size={28} strokeWidth={1.2} />, label: 'DJ Set', w: 'col-span-1 lg:col-span-2', h: 'row-span-1', bg: 'rgba(168,85,247,0.06)', iconColor: 'rgba(168,85,247,0.5)' },
+  { icon: <TreePine size={28} strokeWidth={1.2} />, label: 'Piazzetta', w: 'col-span-1 lg:col-span-2', h: 'row-span-1', bg: 'rgba(16,185,129,0.06)', iconColor: 'rgba(16,185,129,0.5)' },
+  { icon: <Sparkles size={28} strokeWidth={1.2} />, label: 'Atmosfera', w: 'col-span-2 lg:col-span-3', h: 'row-span-1', bg: 'rgba(244,63,94,0.06)', iconColor: 'rgba(244,63,94,0.5)' },
+  { icon: <Target size={28} strokeWidth={1.2} />, label: 'Beer Pong', w: 'col-span-1 lg:col-span-2', h: 'row-span-1', bg: 'rgba(59,130,246,0.06)', iconColor: 'rgba(59,130,246,0.5)' },
+  { icon: <GlassWater size={28} strokeWidth={1.2} />, label: 'Aperitivo', w: 'col-span-1 lg:col-span-2', h: 'row-span-2', bg: 'rgba(245,158,11,0.06)', iconColor: 'rgba(245,158,11,0.5)' },
+  { icon: <Flame size={28} strokeWidth={1.2} />, label: 'Serate live', w: 'col-span-2 lg:col-span-3', h: 'row-span-1', bg: 'rgba(239,68,68,0.06)', iconColor: 'rgba(239,68,68,0.5)' },
 ]
 
 export default function Gallery() {
@@ -97,8 +98,8 @@ export default function Gallery() {
               data-hover
             >
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 p-4">
-                <span className="text-3xl lg:text-4xl group-hover:scale-125 transition-transform duration-700">
-                  {item.emoji}
+                <span className="group-hover:scale-125 transition-transform duration-700" style={{ color: item.iconColor }}>
+                  {item.icon}
                 </span>
                 <span className="font-grotesk text-[9px] lg:text-[10px] tracking-[0.3em] uppercase text-center" style={{ color: 'rgba(255,255,255,0.2)' }}>
                   {item.label}
