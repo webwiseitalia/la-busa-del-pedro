@@ -1,160 +1,201 @@
-import { motion, useInView } from 'framer-motion'
-import { useRef } from 'react'
-import { Music, Beer, Trophy, PartyPopper, Instagram, Calendar } from 'lucide-react'
-import { FaInstagram } from 'react-icons/fa'
+import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import SplitType from 'split-type'
 
-function AnimatedSection({ children, delay = 0 }) {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: '-80px' })
+gsap.registerPlugin(ScrollTrigger)
 
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay }}
-    >
-      {children}
-    </motion.div>
-  )
-}
-
-const eventTypes = [
+const events = [
   {
-    icon: <Music className="w-8 h-8" />,
+    icon: '🎧',
     title: 'DJ Set',
-    description: 'Musica live e selezioni dei migliori DJ. Ogni weekend una serata diversa.',
-    color: 'from-purple-500/20 to-purple-500/5',
-    borderColor: 'border-purple-500/20 hover:border-purple-500/40',
-    iconBg: 'bg-purple-500/10',
-    iconColor: 'text-purple-400',
+    sub: 'Ogni weekend',
+    description: 'Musica live e selezioni dei migliori DJ. Ogni weekend una serata diversa, ogni serata un ricordo.',
+    position: 'lg:col-start-1 lg:row-start-1',
+    size: 'lg:col-span-7',
+    gradient: 'from-purple-500/[0.08] to-transparent',
+    borderColor: 'rgba(168,85,247,0.12)',
   },
   {
-    icon: <Beer className="w-8 h-8" />,
+    icon: '🍻',
     title: 'Happy Hour',
+    sub: 'Mer — Dom',
     description: 'Aperitivo con buffet e drink speciali. Il momento perfetto per iniziare la serata.',
-    color: 'from-amber-500/20 to-amber-500/5',
-    borderColor: 'border-amber-500/20 hover:border-amber-500/40',
-    iconBg: 'bg-amber-500/10',
-    iconColor: 'text-amber-400',
+    position: 'lg:col-start-8 lg:row-start-1',
+    size: 'lg:col-span-5',
+    gradient: 'from-amber-500/[0.08] to-transparent',
+    borderColor: 'rgba(245,158,11,0.12)',
   },
   {
-    icon: <Trophy className="w-8 h-8" />,
+    icon: '🏓',
     title: 'Beer Pong',
-    description: 'Tornei e sfide epiche con Distrettoundici. Metti alla prova la tua mira!',
-    color: 'from-emerald-500/20 to-emerald-500/5',
-    borderColor: 'border-emerald-500/20 hover:border-emerald-500/40',
-    iconBg: 'bg-emerald-500/10',
-    iconColor: 'text-emerald-400',
+    sub: 'con Distrettoundici',
+    description: 'Tornei e sfide epiche. Metti alla prova la tua mira con i campioni di Distrettoundici!',
+    position: 'lg:col-start-1 lg:row-start-2',
+    size: 'lg:col-span-5',
+    gradient: 'from-emerald-500/[0.08] to-transparent',
+    borderColor: 'rgba(16,185,129,0.12)',
   },
   {
-    icon: <PartyPopper className="w-8 h-8" />,
+    icon: '🎉',
     title: 'Serate Speciali',
+    sub: 'Stay tuned',
     description: 'Eventi a tema, feste, inaugurazioni e sorprese. Seguici per non perderti nulla!',
-    color: 'from-rose-500/20 to-rose-500/5',
-    borderColor: 'border-rose-500/20 hover:border-rose-500/40',
-    iconBg: 'bg-rose-500/10',
-    iconColor: 'text-rose-400',
+    position: 'lg:col-start-6 lg:row-start-2',
+    size: 'lg:col-span-7',
+    gradient: 'from-rose-500/[0.08] to-transparent',
+    borderColor: 'rgba(244,63,94,0.12)',
   },
 ]
 
-const partners = [
-  'R3SET Club',
-  'Distrettoundici',
-  'BEACH Lake Endine',
-  'K Barber Soul',
-]
+const partners = ['R3SET Club', 'Distrettoundici', 'BEACH Lake Endine', 'K Barber Soul']
 
 export default function Eventi() {
+  const sectionRef = useRef(null)
+  const headingRef = useRef(null)
+  const cardsRef = useRef([])
+  const ctaRef = useRef(null)
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const splitH = new SplitType(headingRef.current, { types: 'chars', tagName: 'span' })
+      gsap.fromTo(splitH.chars,
+        { y: '100%', opacity: 0 },
+        {
+          y: '0%', opacity: 1,
+          duration: 0.7,
+          stagger: 0.02,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: headingRef.current, start: 'top 85%' },
+        }
+      )
+
+      // Cards - each with different entrance
+      cardsRef.current.filter(Boolean).forEach((card, i) => {
+        const directions = [
+          { x: -60, y: 30, rotate: -2 },
+          { x: 60, y: 20, rotate: 1 },
+          { x: -40, y: 50, rotate: 1.5 },
+          { x: 50, y: 40, rotate: -1 },
+        ]
+        const dir = directions[i % 4]
+        gsap.fromTo(card,
+          { x: dir.x, y: dir.y, opacity: 0, rotation: dir.rotate },
+          {
+            x: 0, y: 0, opacity: 1, rotation: 0,
+            duration: 1,
+            ease: 'power3.out',
+            scrollTrigger: { trigger: card, start: 'top 88%' },
+          }
+        )
+      })
+
+      // CTA
+      gsap.fromTo(ctaRef.current,
+        { y: 50, opacity: 0 },
+        {
+          y: 0, opacity: 1,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: ctaRef.current, start: 'top 90%' },
+        }
+      )
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <section id="eventi" className="relative section-padding overflow-hidden">
-      {/* Background */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-gold/20 to-transparent" />
-      <div className="absolute top-1/3 left-0 w-80 h-80 bg-brand-gold/[0.03] rounded-full blur-[120px]" />
+    <section ref={sectionRef} id="eventi" className="relative overflow-hidden">
+      <div className="w-full h-[1px]" style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(201,168,76,0.15) 30%, rgba(201,168,76,0.15) 70%, transparent 100%)' }} />
 
-      <div className="max-w-7xl mx-auto relative">
-        {/* Section header */}
-        <AnimatedSection>
-          <div className="text-center mb-16">
-            <span className="text-brand-gold text-sm font-medium tracking-[0.3em] uppercase">
-              Programmazione
-            </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-white mt-4 mb-6">
-              Eventi & <span className="gold-text">Serate</span>
-            </h2>
-            <div className="gold-divider mb-8" />
-            <p className="text-white/50 text-lg max-w-2xl mx-auto">
-              Ogni settimana qualcosa di nuovo. DJ set, happy hour, tornei, serate a tema.
-              Seguici sui social per non perderti nulla!
-            </p>
-          </div>
-        </AnimatedSection>
+      <div className="px-5 lg:px-10 pt-24 lg:pt-34 pb-20 lg:pb-30">
+        {/* Section label */}
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-12 h-[1px]" style={{ background: '#c9a84c' }} />
+          <span className="font-grotesk text-[10px] tracking-[0.5em] uppercase" style={{ color: 'rgba(201,168,76,0.6)' }}>
+            03 — Programmazione
+          </span>
+        </div>
 
-        {/* Event types grid */}
-        <div className="grid sm:grid-cols-2 gap-6 mb-16">
-          {eventTypes.map((event, i) => (
-            <AnimatedSection key={event.title} delay={0.1 * i}>
+        {/* Heading - right-aligned this time, breaking the pattern */}
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16 lg:mb-24">
+          <p className="font-body text-sm leading-relaxed max-w-xs order-2 lg:order-1 lg:pb-2" style={{ color: 'rgba(255,255,255,0.3)' }}>
+            Ogni settimana qualcosa di nuovo.
+            Seguici sui social per non perderti nulla.
+          </p>
+          <h2
+            ref={headingRef}
+            className="fluid-heading text-white order-1 lg:order-2 lg:text-right"
+          >
+            Eventi &<br />
+            <em className="not-italic" style={{ color: '#c9a84c' }}>Serate</em>
+          </h2>
+        </div>
+
+        {/* Event cards - broken grid with overlaps */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5">
+          {events.map((event, i) => (
+            <div
+              key={event.title}
+              ref={(el) => (cardsRef.current[i] = el)}
+              className={`${event.position} ${event.size} group relative p-6 lg:p-8 overflow-hidden transition-all duration-700`}
+              style={{
+                background: 'rgba(255,255,255,0.02)',
+                border: `1px solid ${event.borderColor}`,
+              }}
+              data-hover
+            >
+              {/* Hover gradient */}
               <div
-                className={`relative overflow-hidden rounded-2xl border ${event.borderColor} bg-white/[0.02] p-6 sm:p-8 transition-all duration-500 h-full group`}
-              >
-                <div className={`absolute inset-0 bg-gradient-to-br ${event.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                <div className="relative">
-                  <div className={`w-16 h-16 rounded-2xl ${event.iconBg} flex items-center justify-center mb-5 ${event.iconColor}`}>
-                    {event.icon}
-                  </div>
-                  <h3 className="text-xl font-display font-bold text-white mb-3">
-                    {event.title}
-                  </h3>
-                  <p className="text-white/50 leading-relaxed">
-                    {event.description}
-                  </p>
+                className={`absolute inset-0 bg-gradient-to-br ${event.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-700`}
+              />
+
+              <div className="relative">
+                <div className="flex items-start justify-between mb-6">
+                  <span className="text-3xl lg:text-4xl">{event.icon}</span>
+                  <span className="font-grotesk text-[9px] tracking-[0.3em] uppercase" style={{ color: 'rgba(255,255,255,0.2)' }}>
+                    {event.sub}
+                  </span>
                 </div>
+                <h3 className="font-display text-xl lg:text-2xl font-bold text-white mb-3 group-hover:text-brand-gold transition-colors duration-500">
+                  {event.title}
+                </h3>
+                <p className="font-body text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                  {event.description}
+                </p>
               </div>
-            </AnimatedSection>
+            </div>
           ))}
         </div>
 
-        {/* Next event / Instagram CTA */}
-        <AnimatedSection delay={0.3}>
-          <div className="gold-glass-card p-8 sm:p-10 text-center max-w-3xl mx-auto">
-            <Calendar className="w-10 h-10 text-brand-gold mx-auto mb-4" />
-            <h3 className="text-2xl font-display font-bold text-white mb-3">
-              Prossimi Eventi
-            </h3>
-            <p className="text-white/50 mb-6 max-w-lg mx-auto">
-              Segui il nostro profilo Instagram per scoprire tutti gli eventi in programma,
-              le serate speciali e le sorprese che abbiamo in serbo per te.
+        {/* Instagram CTA - asymmetric */}
+        <div ref={ctaRef} className="mt-20 lg:mt-26 flex flex-col lg:flex-row lg:items-end gap-8">
+          <div className="lg:w-[55%]">
+            <p className="font-display text-2xl lg:text-3xl italic leading-snug" style={{ color: 'rgba(255,255,255,0.15)' }}>
+              "Segui il nostro Instagram per scoprire tutti gli eventi in programma"
             </p>
+          </div>
+          <div className="lg:w-[45%] flex flex-col items-start lg:items-end gap-4">
             <a
               href="https://www.instagram.com/labusa_del_pedro/"
               target="_blank"
               rel="noopener noreferrer"
-              className="gold-button inline-flex items-center gap-2 text-sm tracking-wider uppercase"
+              data-hover
+              className="font-grotesk text-sm tracking-[0.2em] uppercase pb-1 transition-colors duration-500"
+              style={{ color: '#c9a84c', borderBottom: '1px solid rgba(201,168,76,0.4)' }}
             >
-              <FaInstagram size={18} />
               @labusa_del_pedro
             </a>
-          </div>
-        </AnimatedSection>
-
-        {/* Partners */}
-        <AnimatedSection delay={0.4}>
-          <div className="mt-16 text-center">
-            <p className="text-white/30 text-sm tracking-widest uppercase mb-6">
-              I nostri partner
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
-              {partners.map((partner) => (
-                <span
-                  key={partner}
-                  className="text-white/20 text-sm font-medium tracking-wider hover:text-brand-gold/50 transition-colors"
-                >
-                  {partner}
+            <div className="flex flex-wrap gap-x-6 gap-y-2">
+              {partners.map((p) => (
+                <span key={p} className="font-grotesk text-[10px] tracking-[0.2em] uppercase" style={{ color: 'rgba(255,255,255,0.12)' }}>
+                  {p}
                 </span>
               ))}
             </div>
           </div>
-        </AnimatedSection>
+        </div>
       </div>
     </section>
   )

@@ -1,38 +1,69 @@
-import { FaInstagram, FaFacebookF } from 'react-icons/fa'
-import { MapPin, ArrowUp } from 'lucide-react'
+import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import logo from '../assets/logo-labusa-del-pedro.webp'
 
+gsap.registerPlugin(ScrollTrigger)
+
 export default function Footer() {
+  const footerRef = useRef(null)
+  const marqueeRef = useRef(null)
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Footer marquee
+      if (marqueeRef.current) {
+        gsap.to(marqueeRef.current, {
+          x: '-50%',
+          duration: 30,
+          repeat: -1,
+          ease: 'none',
+        })
+      }
+    }, footerRef)
+
+    return () => ctx.revert()
+  }, [])
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (
-    <footer className="relative border-t border-white/5">
-      {/* Gold line */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-gold/30 to-transparent" />
+    <footer ref={footerRef} className="relative overflow-hidden">
+      {/* Large marquee text */}
+      <div className="overflow-hidden py-10 lg:py-16 border-y" style={{ borderColor: 'rgba(255,255,255,0.03)' }}>
+        <div ref={marqueeRef} className="marquee-track">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <span
+              key={i}
+              className="font-display text-5xl lg:text-8xl font-bold italic whitespace-nowrap"
+              style={{ color: 'rgba(255,255,255,0.03)', paddingRight: '6rem' }}
+            >
+              La Büsa del Pedro &bull;&nbsp;
+            </span>
+          ))}
+        </div>
+      </div>
 
-      <div className="max-w-7xl mx-auto section-padding pb-8">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-          {/* Logo & description */}
-          <div className="sm:col-span-2 lg:col-span-1">
-            <img
-              src={logo}
-              alt="La Büsa del Pedro"
-              className="h-16 w-auto mb-5"
-            />
-            <p className="text-white/40 text-sm leading-relaxed">
+      <div className="px-5 lg:px-10 py-12 lg:py-16">
+        {/* Three columns - irregular widths */}
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-0 mb-16">
+          {/* Logo + tagline */}
+          <div className="lg:w-[35%]">
+            <img src={logo} alt="La Büsa del Pedro" className="h-14 w-auto mb-4" />
+            <p className="font-body text-xs leading-relaxed max-w-xs" style={{ color: 'rgba(255,255,255,0.2)' }}>
               Il nuovo cuore della notte brenese.
               Cocktail, eventi e buona musica nel centro storico di Breno.
             </p>
           </div>
 
-          {/* Quick links */}
-          <div>
-            <h4 className="text-brand-gold text-sm font-medium tracking-widest uppercase mb-5">
-              Esplora
-            </h4>
-            <ul className="space-y-3">
+          {/* Navigation */}
+          <div className="lg:w-[30%] lg:pl-12">
+            <span className="font-grotesk text-[10px] tracking-[0.3em] uppercase block mb-5" style={{ color: 'rgba(201,168,76,0.4)' }}>
+              Naviga
+            </span>
+            <div className="flex flex-col gap-3">
               {[
                 { label: 'Il Locale', href: '#chi-siamo' },
                 { label: 'Drink List', href: '#drink-menu' },
@@ -40,88 +71,81 @@ export default function Footer() {
                 { label: 'Gallery', href: '#gallery' },
                 { label: 'Contatti', href: '#contatti' },
               ].map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    onClick={(e) => {
-                      e.preventDefault()
-                      document.querySelector(link.href)?.scrollIntoView({ behavior: 'smooth' })
-                    }}
-                    className="text-white/40 hover:text-brand-gold transition-colors text-sm"
-                  >
-                    {link.label}
-                  </a>
-                </li>
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    document.querySelector(link.href)?.scrollIntoView({ behavior: 'smooth' })
+                  }}
+                  data-hover
+                  className="font-grotesk text-xs tracking-wider transition-colors duration-500"
+                  style={{ color: 'rgba(255,255,255,0.2)' }}
+                >
+                  {link.label}
+                </a>
               ))}
-            </ul>
+            </div>
           </div>
 
-          {/* Address */}
-          <div>
-            <h4 className="text-brand-gold text-sm font-medium tracking-widest uppercase mb-5">
-              Dove siamo
-            </h4>
-            <div className="flex items-start gap-2 text-white/40 text-sm mb-3">
-              <MapPin size={14} className="text-brand-gold mt-1 flex-shrink-0" />
-              <div>
-                <p>Via Agostino Rizzieri 1</p>
-                <p>25043 Breno (BS)</p>
+          {/* Info + back to top */}
+          <div className="lg:w-[35%] flex flex-col justify-between">
+            <div>
+              <span className="font-grotesk text-[10px] tracking-[0.3em] uppercase block mb-5" style={{ color: 'rgba(201,168,76,0.4)' }}>
+                Info
+              </span>
+              <p className="font-body text-xs" style={{ color: 'rgba(255,255,255,0.2)' }}>
+                Via Agostino Rizzieri 1
+              </p>
+              <p className="font-body text-xs" style={{ color: 'rgba(255,255,255,0.2)' }}>
+                25043 Breno (BS)
+              </p>
+              <div className="flex items-center gap-4 mt-4">
+                <a
+                  href="https://www.instagram.com/labusa_del_pedro/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-hover
+                  className="font-grotesk text-[10px] tracking-[0.2em] uppercase transition-colors duration-500"
+                  style={{ color: 'rgba(255,255,255,0.2)' }}
+                >
+                  Instagram
+                </a>
+                <span style={{ color: 'rgba(255,255,255,0.06)' }}>|</span>
+                <a
+                  href="https://www.facebook.com/LABUSAdelpedro"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-hover
+                  className="font-grotesk text-[10px] tracking-[0.2em] uppercase transition-colors duration-500"
+                  style={{ color: 'rgba(255,255,255,0.2)' }}
+                >
+                  Facebook
+                </a>
               </div>
-            </div>
-          </div>
-
-          {/* Social */}
-          <div>
-            <h4 className="text-brand-gold text-sm font-medium tracking-widest uppercase mb-5">
-              Social
-            </h4>
-            <div className="flex items-center gap-3 mb-6">
-              <a
-                href="https://www.instagram.com/labusa_del_pedro/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-brand-gold hover:border-brand-gold/30 transition-all"
-                aria-label="Instagram"
-              >
-                <FaInstagram size={18} />
-              </a>
-              <a
-                href="https://www.facebook.com/LABUSAdelpedro"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/40 hover:text-brand-gold hover:border-brand-gold/30 transition-all"
-                aria-label="Facebook"
-              >
-                <FaFacebookF size={16} />
-              </a>
-            </div>
-            <p className="text-white/30 text-sm">
-              @labusa_del_pedro
-            </p>
-          </div>
-        </div>
-
-        {/* Divider */}
-        <div className="border-t border-white/5 pt-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-center sm:text-left">
-              <p className="text-white/30 text-xs">
-                &copy; 2026 La Busa del Pedro di Pedretti Daniel &mdash; Breno (BS)
-              </p>
-              <p className="text-white/20 text-xs mt-1">
-                Bevi responsabilmente. Vietata la vendita di alcolici ai minori di 18 anni.
-              </p>
             </div>
 
             {/* Back to top */}
             <button
               onClick={scrollToTop}
-              className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/30 hover:text-brand-gold hover:border-brand-gold/30 transition-all"
-              aria-label="Torna su"
+              data-hover
+              className="self-start lg:self-end mt-8 lg:mt-0 font-grotesk text-[10px] tracking-[0.3em] uppercase flex items-center gap-3 transition-colors duration-500"
+              style={{ color: 'rgba(255,255,255,0.15)' }}
             >
-              <ArrowUp size={18} />
+              <span>↑</span>
+              Torna su
             </button>
           </div>
+        </div>
+
+        {/* Bottom bar - spread wide */}
+        <div className="border-t pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4" style={{ borderColor: 'rgba(255,255,255,0.04)' }}>
+          <p className="font-body text-[10px]" style={{ color: 'rgba(255,255,255,0.12)' }}>
+            &copy; 2026 La Busa del Pedro di Pedretti Daniel — Breno (BS)
+          </p>
+          <p className="font-body text-[10px]" style={{ color: 'rgba(255,255,255,0.1)' }}>
+            Bevi responsabilmente. Vietata la vendita di alcolici ai minori di 18 anni.
+          </p>
         </div>
       </div>
     </footer>

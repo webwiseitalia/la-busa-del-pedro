@@ -1,211 +1,203 @@
-import { motion, useInView } from 'framer-motion'
-import { useRef, useState } from 'react'
-import { Wine, Beer, GlassWater, Martini, Coffee, Grape } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import SplitType from 'split-type'
 
-function AnimatedSection({ children, delay = 0 }) {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: '-80px' })
+gsap.registerPlugin(ScrollTrigger)
 
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, delay }}
-    >
-      {children}
-    </motion.div>
-  )
-}
-
-const categories = [
+const drinks = [
   {
-    id: 'signature',
-    label: 'Signature',
-    icon: <Martini size={20} />,
-    drinks: [
-      {
-        name: 'Bré',
-        description: 'Un omaggio a Breno. Creazione originale con ingredienti locali e un tocco inaspettato.',
-        tag: 'Speciale',
-      },
-      {
-        name: 'Generale',
-        description: 'Ispirato al Generale Pietro Ronchi, eroe di Breno. Intenso e deciso.',
-        tag: 'Classico',
-      },
-      {
-        name: 'Sant\'Antonio',
-        description: 'Dedicato al patrono di Breno. Fresco, aromatico e sorprendente.',
-        tag: 'Fresco',
-      },
-      {
-        name: 'Pedro\'s Special',
-        description: 'La creazione del capo. Un blend segreto che racchiude l\'essenza della Büsa.',
-        tag: 'Must Try',
-      },
-    ],
+    name: 'Bré',
+    description: 'Un omaggio a Breno. Creazione originale con ingredienti locali e un tocco inaspettato.',
+    tag: 'Signature',
+    num: '01',
   },
   {
-    id: 'classici',
-    label: 'Classici',
-    icon: <Wine size={20} />,
-    drinks: [
-      { name: 'Negroni', description: 'Gin, Campari, Vermouth rosso. L\'intramontabile.' },
-      { name: 'Mojito', description: 'Rum bianco, lime, menta, zucchero di canna. Freschezza pura.' },
-      { name: 'Spritz', description: 'Prosecco, Aperol o Select, soda. L\'aperitivo per eccellenza.' },
-      { name: 'Old Fashioned', description: 'Bourbon, zucchero, Angostura. Eleganza senza tempo.' },
-      { name: 'Moscow Mule', description: 'Vodka, ginger beer, lime. Rinfrescante e speziato.' },
-      { name: 'Gin Tonic', description: 'Gin premium, tonica artigianale, botaniche. Raffinato.' },
-    ],
+    name: 'Generale',
+    description: 'Ispirato al Generale Pietro Ronchi, eroe di Breno. Intenso e deciso.',
+    tag: 'Signature',
+    num: '02',
   },
   {
-    id: 'birre',
-    label: 'Birre',
-    icon: <Beer size={20} />,
-    drinks: [
-      { name: 'Birre alla Spina', description: 'Selezione di birre artigianali e commerciali alla spina.' },
-      { name: 'Birre in Bottiglia', description: 'Ampia scelta di birre nazionali e internazionali.' },
-      { name: 'Birre Artigianali', description: 'Selezione di birrifici locali e italiani.' },
-    ],
+    name: 'Sant\'Antonio',
+    description: 'Dedicato al patrono di Breno. Fresco, aromatico e sorprendente.',
+    tag: 'Signature',
+    num: '03',
   },
   {
-    id: 'vini',
-    label: 'Vini & Bollicine',
-    icon: <Grape size={20} />,
-    drinks: [
-      { name: 'Vini Rossi', description: 'Selezione di rossi regionali e nazionali.' },
-      { name: 'Vini Bianchi', description: 'Bianchi freschi e aromatici.' },
-      { name: 'Prosecco & Spumanti', description: 'Bollicine per ogni occasione.' },
-    ],
+    name: 'Pedro\'s Special',
+    description: 'La creazione del capo. Un blend segreto che racchiude l\'essenza della Büsa.',
+    tag: 'Must Try',
+    num: '04',
   },
   {
-    id: 'analcolici',
-    label: 'Analcolici',
-    icon: <GlassWater size={20} />,
-    drinks: [
-      { name: 'Virgin Mojito', description: 'Tutta la freschezza, zero alcol.' },
-      { name: 'Fruit Smoothies', description: 'Frutta fresca frullata al momento.' },
-      { name: 'Soft Drinks', description: 'Bibite classiche e speciali.' },
-    ],
+    name: 'Negroni',
+    description: 'Gin, Campari, Vermouth rosso. L\'intramontabile.',
+    tag: 'Classico',
+    num: '05',
   },
   {
-    id: 'caffe',
-    label: 'Caffetteria',
-    icon: <Coffee size={20} />,
-    drinks: [
-      { name: 'Caffè Specialty', description: 'Caffè selezionati e preparati con cura.' },
-      { name: 'Caffè Corretti', description: 'Grappa, sambuca, baileys... scegli tu.' },
-    ],
+    name: 'Old Fashioned',
+    description: 'Bourbon, zucchero, Angostura. Eleganza senza tempo.',
+    tag: 'Classico',
+    num: '06',
+  },
+  {
+    name: 'Mojito',
+    description: 'Rum bianco, lime, menta, zucchero di canna. Freschezza pura.',
+    tag: 'Classico',
+    num: '07',
+  },
+  {
+    name: 'Moscow Mule',
+    description: 'Vodka, ginger beer, lime. Rinfrescante e speziato.',
+    tag: 'Classico',
+    num: '08',
   },
 ]
 
+const categories = ['Tutto', 'Signature', 'Classico', 'Must Try']
+
 export default function DrinkMenu() {
-  const [activeCategory, setActiveCategory] = useState('signature')
-  const activeDrinks = categories.find((c) => c.id === activeCategory)
+  const sectionRef = useRef(null)
+  const headingRef = useRef(null)
+  const itemsRef = useRef([])
+  const [filter, setFilter] = useState('Tutto')
+
+  const filteredDrinks = filter === 'Tutto' ? drinks : drinks.filter(d => d.tag === filter)
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const splitH = new SplitType(headingRef.current, { types: 'chars', tagName: 'span' })
+      gsap.fromTo(splitH.chars,
+        { y: '100%', opacity: 0 },
+        {
+          y: '0%', opacity: 1,
+          duration: 0.7,
+          stagger: 0.025,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: headingRef.current, start: 'top 85%' },
+        }
+      )
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [])
+
+  useEffect(() => {
+    const validItems = itemsRef.current.filter(Boolean)
+    if (validItems.length === 0) return
+    gsap.fromTo(validItems,
+      { y: 40, opacity: 0 },
+      {
+        y: 0, opacity: 1,
+        duration: 0.6,
+        stagger: 0.06,
+        ease: 'power3.out',
+      }
+    )
+  }, [filter])
 
   return (
-    <section id="drink-menu" className="relative section-padding overflow-hidden">
-      {/* Background accent */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-gold/20 to-transparent" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-brand-gold/[0.03] rounded-full blur-[120px]" />
+    <section ref={sectionRef} id="drink-menu" className="relative overflow-hidden">
+      {/* Angled divider line */}
+      <div className="w-full h-[1px]" style={{ background: 'linear-gradient(90deg, transparent 0%, rgba(201,168,76,0.15) 30%, rgba(201,168,76,0.15) 70%, transparent 100%)' }} />
 
-      <div className="max-w-7xl mx-auto relative">
-        {/* Section header */}
-        <AnimatedSection>
-          <div className="text-center mb-12">
-            <span className="text-brand-gold text-sm font-medium tracking-[0.3em] uppercase">
-              I Nostri Cocktail
-            </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-white mt-4 mb-6">
-              Drink <span className="gold-text">List</span>
-            </h2>
-            <div className="gold-divider mb-8" />
-            <p className="text-white/50 text-lg max-w-2xl mx-auto">
-              Cocktail classici rivisitati e creazioni originali.
-              Ogni drink racconta una storia, ogni sorso è un'esperienza.
-            </p>
-          </div>
-        </AnimatedSection>
-
-        {/* Category tabs */}
-        <AnimatedSection delay={0.1}>
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-12">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                  activeCategory === cat.id
-                    ? 'bg-brand-gold text-brand-black'
-                    : 'border border-white/10 text-white/50 hover:text-brand-gold hover:border-brand-gold/30'
-                }`}
-              >
-                {cat.icon}
-                <span className="hidden sm:inline">{cat.label}</span>
-              </button>
-            ))}
-          </div>
-        </AnimatedSection>
-
-        {/* Drink list */}
-        <div className="max-w-3xl mx-auto">
-          <motion.div
-            key={activeCategory}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="space-y-4"
-          >
-            {activeDrinks?.drinks.map((drink, i) => (
-              <motion.div
-                key={drink.name}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.08 }}
-                className="glass-card p-5 sm:p-6 group hover:border-brand-gold/30 transition-all duration-500"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-lg font-display font-semibold text-white group-hover:text-brand-gold transition-colors">
-                        {drink.name}
-                      </h3>
-                      {drink.tag && (
-                        <span className="text-[10px] font-medium tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-brand-gold/10 text-brand-gold border border-brand-gold/20">
-                          {drink.tag}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-white/40 text-sm leading-relaxed">
-                      {drink.description}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+      <div className="px-5 lg:px-10 pt-24 lg:pt-34 pb-20 lg:pb-30">
+        {/* Section label */}
+        <div className="flex items-center gap-4 mb-6">
+          <div className="w-12 h-[1px]" style={{ background: '#c9a84c' }} />
+          <span className="font-grotesk text-[10px] tracking-[0.5em] uppercase" style={{ color: 'rgba(201,168,76,0.6)' }}>
+            02 — I Nostri Drink
+          </span>
         </div>
 
-        {/* CTA */}
-        <AnimatedSection delay={0.2}>
-          <div className="text-center mt-12">
-            <p className="text-white/30 text-sm mb-4 italic">
-              Menu completo disponibile al locale
-            </p>
-            <a
-              href="#contatti"
-              onClick={(e) => {
-                e.preventDefault()
-                document.querySelector('#contatti')?.scrollIntoView({ behavior: 'smooth' })
+        {/* Layout: heading left, description right - asymmetric */}
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16 lg:mb-24">
+          <h2
+            ref={headingRef}
+            className="fluid-heading text-white max-w-lg"
+          >
+            Drink
+            <br />
+            <em className="not-italic" style={{ color: '#c9a84c' }}>List</em>
+          </h2>
+          <p className="font-body text-sm leading-relaxed max-w-sm lg:text-right lg:pb-2" style={{ color: 'rgba(255,255,255,0.3)' }}>
+            Cocktail classici rivisitati e creazioni originali.
+            Ogni drink racconta una storia, ogni sorso è un'esperienza.
+          </p>
+        </div>
+
+        {/* Filter tabs - left aligned, not centered */}
+        <div className="flex flex-wrap gap-3 mb-12">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setFilter(cat)}
+              data-hover
+              className="font-grotesk text-[11px] tracking-[0.2em] uppercase px-5 py-2.5 transition-all duration-500"
+              style={{
+                color: filter === cat ? '#0a0a0a' : 'rgba(255,255,255,0.35)',
+                background: filter === cat ? '#c9a84c' : 'transparent',
+                border: `1px solid ${filter === cat ? '#c9a84c' : 'rgba(255,255,255,0.08)'}`,
               }}
-              className="outline-button inline-flex items-center gap-2 text-sm tracking-wider uppercase"
             >
-              <Wine size={16} />
-              Vieni a scoprirli tutti
-            </a>
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* Drink list - editorial style, NOT cards */}
+        <div className="max-w-5xl">
+          {filteredDrinks.map((drink, i) => (
+            <div
+              key={drink.name + filter}
+              ref={(el) => (itemsRef.current[i] = el)}
+              className="group border-b py-6 lg:py-8 flex flex-col lg:flex-row lg:items-baseline gap-2 lg:gap-0"
+              style={{ borderColor: 'rgba(255,255,255,0.05)' }}
+              data-hover
+            >
+              {/* Number */}
+              <span className="font-grotesk text-[10px] tracking-widest lg:w-16 flex-shrink-0" style={{ color: 'rgba(201,168,76,0.3)' }}>
+                {drink.num}
+              </span>
+
+              {/* Name - large */}
+              <span className="font-display text-2xl lg:text-3xl font-semibold text-white group-hover:text-brand-gold transition-colors duration-500 lg:w-[35%] flex-shrink-0">
+                {drink.name}
+              </span>
+
+              {/* Description */}
+              <span className="font-body text-sm leading-relaxed flex-1 lg:px-8" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                {drink.description}
+              </span>
+
+              {/* Tag */}
+              <span
+                className="font-grotesk text-[9px] tracking-[0.3em] uppercase self-start lg:self-auto px-3 py-1 flex-shrink-0"
+                style={{
+                  color: 'rgba(201,168,76,0.6)',
+                  border: '1px solid rgba(201,168,76,0.15)',
+                }}
+              >
+                {drink.tag}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom note - off-center */}
+        <div className="mt-16 lg:mt-20 lg:ml-[30%]">
+          <p className="font-display text-lg italic" style={{ color: 'rgba(255,255,255,0.2)' }}>
+            Menu completo disponibile al locale
+          </p>
+          <div className="flex items-center gap-4 mt-4">
+            <div className="w-8 h-[1px]" style={{ background: 'rgba(201,168,76,0.3)' }} />
+            <span className="font-grotesk text-[10px] tracking-[0.3em] uppercase" style={{ color: 'rgba(255,255,255,0.2)' }}>
+              Birre &bull; Vini &bull; Bollicine &bull; Caffetteria &bull; Analcolici
+            </span>
           </div>
-        </AnimatedSection>
+        </div>
       </div>
     </section>
   )
