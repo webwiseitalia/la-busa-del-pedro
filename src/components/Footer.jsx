@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ArrowUp } from 'lucide-react'
-import logo from '../assets/logo-labusa-del-pedro.webp'
+import logo from '../assets/logo-labusa-trasparente.webp'
 
 gsap.registerPlugin(ScrollTrigger)
 

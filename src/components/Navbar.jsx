@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import gsap from 'gsap'
-import logo from '../assets/logo-labusa-del-pedro.webp'
+import logo from '../assets/logo-labusa-trasparente.webp'
 
 const navLinks = [
   { label: 'Locale', href: '#chi-siamo', num: '01' },
